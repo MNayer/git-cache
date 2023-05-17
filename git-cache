@@ -60,27 +60,18 @@ then
 elif [ "$1" = "add" ]
 then
     
-    if [ "$2" = "" -o "$3" = "" ]
+    if [ "$2" = "" ]
     then
-        echo "Please add: 1) the remote name and 2) the remote url to be added in the cache directory."
+        echo "Please add the remote url to be added in the cache directory."
         exit 1
     fi
     
-    # Fetch new Git repository in a temporary directory for speed reasons
-    #dir=$(mktemp -d)
-    #cd $dir
-    #git init --bare
-    #git remote add --mirror=fetch "$2" "$3"
-    #git fetch --all
-    
     # Copy it in the main cache directory
     cd "$CACHE"
-    #git remote add --mirror=fetch "$2" $dir
-    #git fetch --all
-    #git remote set-url "$2" "$3"
-    git remote add "$2" "$3"
-    git fetch "$2"
-    #rm -rf $dir
+		remote_url=$2
+		remote_name=$(echo "$remote_url" | sed 's/https:\/\///' | sed 's/git@.*://')
+    git remote add "$remote_name" "$remote_url"
+    git fetch "$remote_name"
     
     # Display use
     echo
